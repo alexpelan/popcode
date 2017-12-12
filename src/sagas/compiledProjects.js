@@ -25,6 +25,7 @@ export function* validatedSource() {
         targetBaseTop: true,
         propagateErrorsToParent: true,
         listenForMessages: true,
+        useBuiltinConsole: true,
       },
     );
     yield put(projectCompiled(preview, timestamp));

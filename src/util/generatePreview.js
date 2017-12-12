@@ -97,6 +97,44 @@ const alertAndPromptReplacementScript = `(${function() {
   delete window.swal; // eslint-disable-line prefer-reflect
 }.toString()}());`;
 
+const consoleReplacementScript = `(${function() {
+  /* eslint-disable no-console */
+  const browserConsoleLog = console.log.bind(console);
+  const browserConsoleDebug = console.debug.bind(console);
+  const browserConsoleInfo = console.info.bind(console);
+  const browserConsoleWarn = console.warn.bind(console);
+  const browserConsoleError = console.error.bind(console);
+  /* eslint-enable no-console */
+
+  Object.defineProperties(console, {
+    log: {
+      value: (...args) => {
+        browserConsoleLog(...args);
+      },
+    },
+    debug: {
+      value: (...args) => {
+        browserConsoleDebug(...args);
+      },
+    },
+    info: {
+      value: (...args) => {
+        browserConsoleInfo(...args);
+      },
+    },
+    warn: {
+      value: (...args) => {
+        browserConsoleWarn(...args);
+      },
+    },
+    error: {
+      value: (...args) => {
+        browserConsoleError(...args);
+      },
+    },
+  });
+}.toString()}());`;
+
 export class PreviewGenerator {
   constructor(project, options = {}) {
     this._project = project;
@@ -125,6 +163,10 @@ export class PreviewGenerator {
 
     if (options.nonBlockingAlertsAndPrompts) {
       this._addAlertAndPromptHandling();
+    }
+
+    if (options.useBuiltinConsole) {
+      this._addConsoleHandling();
     }
 
     this._addJavascript(pick(options, 'breakLoops'));
@@ -200,6 +242,12 @@ export class PreviewGenerator {
   _addAlertAndPromptHandling() {
     const scriptTag = this._previewDocument.createElement('script');
     scriptTag.innerHTML = alertAndPromptReplacementScript;
+    this.previewBody.appendChild(scriptTag);
+  }
+
+  _addConsoleHandling() {
+    const scriptTag = this._previewDocument.createElement('script');
+    scriptTag.innerHTML = consoleReplacementScript;
     this.previewBody.appendChild(scriptTag);
   }
 
