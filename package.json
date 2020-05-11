@@ -243,6 +243,7 @@
     "jshint": "2.11.0",
     "keymirror": "0.1.1",
     "loadjs": "4.2.0",
+    "lodash": "4.17.15",
     "lodash-es": "4.17.15",
     "loop-breaker": "0.1.1",
     "lru-cache": "5.1.1",
